@@ -21,6 +21,12 @@
    3.3 startup.bat出现乱码的解决方案：https://blog.csdn.net/weixin_43244698/article/details/85304535  
 4. 安装Maven: https://blog.csdn.net/qq_42150520/article/details/108739219
 
+## 使用说明
+1. 代码里面的一些依赖包没有上传上去,这里你需要在IDEA右击pom.xml文件然后点击Maven,在点击Reload project
+2. ![配置指南](https://user-images.githubusercontent.com/31495311/124353840-85266800-dc3b-11eb-9a5c-a2ef42e2a401.png)
+
+
+
 
 # 项目截图
 ## 首页
