@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="forum.dao.TopicMapper">
+    <!-- 主题基本结果集  -->
+    <resultMap id="BaseResultMap" type="forum.entity.Topic">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="click" property="click" jdbcType="INTEGER"/>
+        <result column="tab_id" property="tabId" jdbcType="TINYINT"/>
+        <result column="isEssence" property="isEssence" jdbcType="INTEGER"/>
+    </resultMap>
+
+
+    <!-- 最多评论主题列表 -->
+    <resultMap id="mostCommentsTopic" type="forum.entity.Topic">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="count_replies" property="countReplies" jdbcType="INTEGER"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <!-- 主题基本结果集+ 主题内容  用于主题详情-->
+    <resultMap id="ResultMapWithBLOBs" type="forum.entity.Topic">
+        <result column="content" property="content" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+    <!-- 主题和用户信息结果集 用于首页显示  -->
+    <resultMap id="topicAndUserInfo" type="forum.entity.Topic">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="click" property="click" jdbcType="INTEGER"/>
+        <result column="tab_id" property="tabId" jdbcType="TINYINT"/>
+        <result column="count_replies" property="countReplies" jdbcType="INTEGER"/>
+        <result column="isEssence" property="isEssence" jdbcType="INTEGER"/>
+        <association property="user" javaType="forum.entity.User">
+            <id column="id" property="id" jdbcType="INTEGER"/>
+            <result column="username" property="username" jdbcType="VARCHAR"/>
+            <result column="avatar" property="avatar" jdbcType="VARCHAR"/>
+        </association>
+        <association property="tab" javaType="forum.entity.Tab">
+            <id column="id" property="id" jdbcType="INTEGER"/>
+            <result column="tab_name" property="tabName" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <!-- 主题详情及用户必要信息 用于主题详情页  -->
+    <resultMap id="topicAndUserDetail" type="forum.entity.Topic">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="LONGVARCHAR"/>
+        <result column="click" property="click" jdbcType="INTEGER"/>
+        <result column="tab_id" property="tabId" jdbcType="TINYINT"/>
+        <result column="isEssence" property="isEssence" jdbcType="INTEGER"/>
+        <association property="user" javaType="forum.entity.User">
+            <id column="id" property="id" jdbcType="INTEGER"/>
+            <result column="username" property="username" jdbcType="VARCHAR"/>
+            <result column="avatar" property="avatar" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+
+    <sql id="Base_Column_List">
+        id
+        ,user_id,create_time,update_time,title,click,tab_id,isEssence
+    </sql>
+    <sql id="Blob_Column_List">
+        content
+    </sql>
+
+
+    <select id="getAllTopic" resultType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from topic
+        ORDER BY id DESC;
+    </select>
+
+
+    <select id="listTopicsAndUsers" resultMap="topicAndUserInfo">
+        select topic.id,
+               topic.user_id,
+               topic.create_time,
+               topic.update_time,
+               topic.title,
+               topic.click,
+               topic.tab_id,
+               topic.isEssence,
+               user.username,
+               user.avatar,
+               tab.tab_name,
+               count(reply.id) as count_replies
+        from topic
+                 LEFT JOIN user on topic.user_id = user.id
+                 LEFT JOIN tab on tab.id = topic.tab_id
+                 LEFT JOIN reply on topic.id = reply.topic_id
+        group by topic.id
+        order by topic.id desc
+    </select>
+
+
+    <select id="listMostCommentsTopics" resultMap="mostCommentsTopic">
+        select topic.id, topic.title, count(reply.id) as count_replies
+        from topic,
+             reply
+        where topic.id = reply.topic_id
+        group by topic.id
+        order by count_replies desc limit 5;
+    </select>
+
+    <select id="getTopicsNum" resultType="java.lang.Integer">
+        select COUNT(*)
+        from topic;
+    </select>
+
+    <select id="existTopic" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM topic
+        WHERE id = #{id,jdbcType=INTEGER};
+    </select>
+
+
+    <select id="selectById" parameterType="java.lang.Integer" resultMap="topicAndUserDetail">
+        select topic.*,user.username,user.avatar
+        from topic,user
+        where topic.user_id=user.id and topic.id=#{id,jdbcType=INTEGER}
+    </select>
+
+
+    <insert id="insert" parameterType="forum.entity.Topic">
+        insert into topic(user_id, create_time,
+                          update_time, title,
+                          tab_id, content,isEssence)
+        values ( #{userId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+                 #{updateTime,jdbcType=TIMESTAMP}, #{title,jdbcType=VARCHAR},
+                 #{tabId,jdbcType=TINYINT}, #{content,jdbcType=LONGVARCHAR},0)
+    </insert>
+
+    <update id="clickAddOne" parameterType="java.lang.Integer">
+        update topic
+        set click=click + 1
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="forum.entity.Topic">
+        update topic
+        <set>
+            <if test="userId != null" >
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="title != null" >
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="click != null" >
+                click = #{click,jdbcType=INTEGER},
+            </if>
+            <if test="tabId != null" >
+                tab_id = #{tabId,jdbcType=TINYINT},
+            </if>
+            <if test="isEssence != null" >
+                isEssence = #{isEssence,jdbcType=INTEGER},
+            </if>
+            <if test="content != null" >
+                content = #{content,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id=#{id,jdbcType=INTEGER}
+    </update>
+
+
+
+
+
+
+
+
+
+</mapper>
