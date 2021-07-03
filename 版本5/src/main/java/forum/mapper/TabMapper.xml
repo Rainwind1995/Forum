@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="forum.dao.TabMapper">
+    <resultMap id="BaseResultMap" type="forum.entity.Tab">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="tab_name" property="tabName" jdbcType="VARCHAR"/>
+        <result column="tab_name_en" property="tabNameEn" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,tab_name,tab_name_en
+    </sql>
+    <select id="getAllTabs" resultMap="BaseResultMap" parameterType="int">
+        select * from tab order by id ASC
+    </select>
+
+    <select id="getByTabNameEn" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select
+        <include refid="Base_Column_List" />
+        from tab
+        where tab_name_en = #{tabNameEn,jdbcType=VARCHAR}
+    </select>
+
+
+</mapper>

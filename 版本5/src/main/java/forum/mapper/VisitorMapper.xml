@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="forum.dao.VisitorMapper">
+    <resultMap id="visitorInfo" type="forum.entity.Visitor">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="IP" property="IP" jdbcType="VARCHAR"/>
+        <result column="visit_time" property="visitTime" jdbcType="TIMESTAMP"/>
+        <result column="device" property="device" jdbcType="VARCHAR"/>
+    </resultMap>
+    <insert id="insert" parameterType="forum.entity.Visitor">
+        insert into visitor (IP, visit_time, device)
+        values (#{IP,jdbcType=VARCHAR}, #{visitTime,jdbcType=TIMESTAMP}, #{device,jdbcType=VARCHAR})
+    </insert>
+
+    <select id="countVisitor" resultType="java.lang.Integer">
+        select count(*)
+        from visitor;
+    </select>
+
+    <select id="todayVisitor" resultType="java.lang.Integer">
+        SELECT count(*)
+        from visitor
+        WHERE DATEDIFF(visit_time, CURDATE()) = 0;
+    </select>
+</mapper>
