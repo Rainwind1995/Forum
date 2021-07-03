@@ -22,6 +22,29 @@
 4. 安装Maven: https://blog.csdn.net/qq_42150520/article/details/108739219
 
 
+# 项目截图
+## 首页
+![首页](https://user-images.githubusercontent.com/31495311/124352896-ddf30200-dc35-11eb-95ee-83c0b846eb8c.png)
+## 注册界面
+![注册](https://user-images.githubusercontent.com/31495311/124352910-ecd9b480-dc35-11eb-8565-0c8f9dd141bb.png)
+## 登录界面
+![登录](https://user-images.githubusercontent.com/31495311/124352928-f8c57680-dc35-11eb-95ca-1d15c7e82d9d.png)
+## 登录成功界面
+![登录成功界面](https://user-images.githubusercontent.com/31495311/124352938-0418a200-dc36-11eb-8f5b-d4c649891356.png)
+## 个人信息界面
+![个人信息界面](https://user-images.githubusercontent.com/31495311/124352941-0e3aa080-dc36-11eb-9a35-74b1456b5e23.png)
+## 设置界面
+![设置界面](https://user-images.githubusercontent.com/31495311/124352945-14c91800-dc36-11eb-945f-7b6fe0367f87.png)
+## 设置头像
+![设置头像](https://user-images.githubusercontent.com/31495311/124352952-1db9e980-dc36-11eb-8db3-853d5e9edf7f.png)
+## 发表主题
+![发表主题](https://user-images.githubusercontent.com/31495311/124352959-26aabb00-dc36-11eb-8217-6c61fc8122cb.png)
+## 添加评论
+![添加评论](https://user-images.githubusercontent.com/31495311/124352975-40e49900-dc36-11eb-9788-5856944a3ccb.png)
+## 管理员操作界面
+![管理员操作界面](https://user-images.githubusercontent.com/31495311/124352993-51950f00-dc36-11eb-817f-b844b7e182fd.png)
+
+
 
 
 # 版本一 (2021-6-29)
